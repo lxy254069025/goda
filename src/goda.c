@@ -7,6 +7,7 @@
 #include "goda_controller.h"
 #include "goda_view.h"
 #include "goda_response.h"
+#include "goda_config.h"
 
 ZEND_DECLARE_MODULE_GLOBALS(goda);
 
@@ -22,8 +23,7 @@ PHP_MINIT_FUNCTION(goda)
 	GODA_STARTUP(response);
 	GODA_STARTUP(controller);
 	GODA_STARTUP(view);
-	
-
+	GODA_STARTUP(config);
     return SUCCESS;
 }
 
