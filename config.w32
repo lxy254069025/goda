@@ -1,0 +1,7 @@
+ARG_ENABLE('goda', 'goda support', 'no');
+
+if (PHP_GODA != 'no') {
+	AC_DEFINE('HAVE_GODA', 1, 'goda support enabled');
+
+	EXTENSION('goda', 'goda.c', null, '/DZEND_ENABLE_STATIC_TSRMLS_CACHE=1');
+}
