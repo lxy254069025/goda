@@ -15,6 +15,7 @@ if test "$PHP_GODA" != "no"; then
   src/goda_router.c   \
   src/goda_response.c \
   src/goda_config.c \
-  src/goda_loader.c, 
+  src/goda_loader.c \
+  src/goda_request.c, 
   $ext_shared)
 fi
