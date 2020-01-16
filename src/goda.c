@@ -10,6 +10,9 @@
 #include "goda_response.h"
 #include "goda_config.h"
 #include "goda_request.h"
+#include "goda_session.h"
+#include "goda_cookie.h"
+#include "goda_model.h"
 
 ZEND_DECLARE_MODULE_GLOBALS(goda);
 
@@ -27,7 +30,9 @@ PHP_MINIT_FUNCTION(goda)
 	GODA_STARTUP(view);
 	GODA_STARTUP(config);
 	GODA_STARTUP(request);
-	
+	GODA_STARTUP(session);
+	GODA_STARTUP(cookie);
+	GODA_STARTUP(model);
     return SUCCESS;
 }
 

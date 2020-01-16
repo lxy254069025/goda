@@ -16,6 +16,9 @@ if test "$PHP_GODA" != "no"; then
   src/goda_response.c \
   src/goda_config.c \
   src/goda_loader.c \
-  src/goda_request.c, 
+  src/goda_request.c  \
+  src/goda_session.c  \
+  src/goda_cookie.c   \
+  src/goda_model.c, 
   $ext_shared)
 fi
