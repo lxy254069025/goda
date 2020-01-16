@@ -5,7 +5,6 @@ return [
     ],
     'GET' => [
         '/' => 'Index@Index',
-        // "/a" => 'Index@aaa',
         '/user' => 'User@Index'
     ],
     'ANY' => [

@@ -4,15 +4,16 @@
 #include "goda_controller.h"
 #include "goda_view.h"
 #include "goda_response.h"
+#include "goda_request.h"
 
 zend_class_entry *goda_controller_ce;
 
 /**
  * handle Index@Index 
  * router_ptr is router object.
- * params 
+ * request is request object. 
  */
-void goda_controller_call_method(zval *handle, zval *router_ptr, zval *params) {
+void goda_controller_call_method(zval *handle, zval *router_ptr, zval *request_ptr) {
     char *controller, *action;
     
     if (Z_TYPE_P(handle) == IS_STRING && Z_STRLEN_P(handle) > 0) {
@@ -43,7 +44,7 @@ void goda_controller_call_method(zval *handle, zval *router_ptr, zval *params) {
                 zend_call_method_with_0_params(&controller_ptr, ce, &ce->constructor, "__construct", NULL);
                 /* call init*/
                 zend_call_method_with_0_params(&controller_ptr, ce, NULL, "init", NULL);
-                zend_update_property(ce, &controller_ptr, ZEND_STRL(GODA_CONTROLLER_PARAMS), params);
+                zend_update_property(ce, &controller_ptr, ZEND_STRL(GODA_CONTROLLER_REUQEST), request_ptr);
             }
             zend_call_method(&controller_ptr, ce, NULL, action, strlen(action), &ret, 0, NULL, NULL);
             
@@ -78,11 +79,8 @@ ZEND_METHOD(goda_controller, __construct) {
 ZEND_METHOD(goda_controller, init) {
     zval assgin, params;
     array_init(&assgin);
-    array_init(&params);
     zend_update_property(goda_controller_ce, getThis(), ZEND_STRL(GODA_CONTROLLER_ASSGIN), &assgin);
-    zend_update_property(goda_controller_ce, getThis(), ZEND_STRL(GODA_CONTROLLER_PARAMS), &params);
     zval_ptr_dtor(&assgin);
-    zval_ptr_dtor(&params);
 }
 
 ZEND_METHOD(goda_controller, get) {
@@ -92,12 +90,10 @@ ZEND_METHOD(goda_controller, get) {
         Z_PARAM_STR(key)
     ZEND_PARSE_PARAMETERS_END();
 
-    zval *params = zend_read_property(goda_controller_ce, getThis(), ZEND_STRL(GODA_CONTROLLER_PARAMS), 1, NULL);
-    if (ZSTR_LEN(key) && Z_TYPE_P(params) == IS_ARRAY) {
-        zval *result = zend_hash_find(Z_ARRVAL_P(params), key);
-        if (result) {
-            RETURN_ZVAL(result, 1, 0);
-        }
+    zval *request_ptr = zend_read_property(goda_controller_ce, getThis(), ZEND_STRL(GODA_CONTROLLER_REUQEST), 1, NULL);
+    zval *params = goda_request_get_params(request_ptr, key);
+    if (params) {
+        RETURN_ZVAL(params, 1, 0);
     }
     RETURN_STRING(ret);
 }
@@ -154,10 +150,8 @@ GODA_MINIT_FUNCTION(controller) {
     INIT_CLASS_ENTRY(ce, "Goda\\Controller", goda_controller_methods);
     goda_controller_ce = zend_register_internal_class(&ce);
 
-    zend_declare_property_null(goda_controller_ce, ZEND_STRL(GODA_CONTROLLER_ROUTER), ZEND_ACC_PUBLIC);
     zend_declare_property_null(goda_controller_ce, ZEND_STRL(GODA_CONTROLLER_REUQEST), ZEND_ACC_PUBLIC);
     zend_declare_property_null(goda_controller_ce, ZEND_STRL(GODA_CONTROLLER_ASSGIN), ZEND_ACC_PUBLIC);
-    zend_declare_property_null(goda_controller_ce, ZEND_STRL(GODA_CONTROLLER_PARAMS), ZEND_ACC_PUBLIC);
     
 
     return SUCCESS;

@@ -5,10 +5,11 @@ class Index extends \Goda\Controller {
     use \Goda\Response;
 
     public function Index() {
-        $this->redirect("/user");
+        $this->render("index/index",['h'=>'Hello World!']);
     }
 
     public function aaa() {
-        $this->render("index/index",[1=>4, "abc"=> 9009, 'h'=>'Hello World!']);
+        echo "Hello Any";
+        var_dump($this);
     }
 }

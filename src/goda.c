@@ -1,6 +1,7 @@
 /* goda extension for PHP */
 
 #include "php_goda.h"
+#include "goda_logo.h"
 #include "goda_application.h"
 #include "goda_router.h"
 #include "goda_loader.h"
@@ -66,7 +67,7 @@ PHP_RSHUTDOWN_FUNCTION(goda)
 PHP_MINFO_FUNCTION(goda)
 {
 	php_info_print_table_start();
-	php_info_print_table_header(2, "goda support", "enabled");
+	php_info_print_table_header(2, "goda support", GODA_LOGO_BASE64"enabled");
 	php_info_print_table_end();
 }
 /* }}} */
