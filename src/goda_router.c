@@ -56,8 +56,8 @@ void goda_router_run(zval *this_ptr) {
     zend_string *uri, *key;
     const char *current_method = goda_request_get_method();
     zend_bool flag = FAILURE;
-
-    ZVAL_NULL(&handle);
+    
+    ZVAL_UNDEF(&handle);
     routes = zend_read_property(goda_router_ce, this_ptr, ZEND_STRL(GODA_ROUTER_ROUTES), 1, NULL);
     request_ptr = zend_read_property(goda_router_ce, this_ptr, ZEND_STRL(GODA_ROUTER_REQUEST), 1, NULL);
     uri = goda_request_get_base_uri();
@@ -77,7 +77,7 @@ void goda_router_run(zval *this_ptr) {
                     } else if (strchr(path_str, '{') != NULL && strchr(path_str, '}') != NULL) {
                         if (goda_request_regexp_match_uri(request_ptr, path, uri)) {
                             flag = SUCCESS;
-                            ZVAL_COPY_VALUE(&handle,pval);
+                            ZVAL_COPY_VALUE(&handle, pval);
                             break;
                         }
                     }
@@ -89,12 +89,12 @@ void goda_router_run(zval *this_ptr) {
         }
     } ZEND_HASH_FOREACH_END();
 
-
-    if (Z_TYPE(handle) == IS_NULL) {
+    if (Z_TYPE(handle) == IS_UNDEF) {
         goda_throw_exception(E_ERROR, " 404"); //
     } else {
         goda_controller_call_method(&handle, this_ptr, request_ptr);
     }
+
     zval_ptr_dtor(&handle);
     zend_string_release(uri);
 }

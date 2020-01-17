@@ -36,7 +36,7 @@ void goda_controller_call_method(zval *handle, zval *router_ptr, zval *request_p
         ce = zend_lookup_class(class_controller);
         zend_string_release(class_controller);
         if (ce) {
-            zval controller_ptr, ret;
+            zval controller_ptr;
             object_init_ex(&controller_ptr, ce);
             zend_str_tolower(action, strlen(action));
             if (instanceof_function(ce, goda_controller_ce)) {
@@ -46,8 +46,8 @@ void goda_controller_call_method(zval *handle, zval *router_ptr, zval *request_p
                 zend_call_method_with_0_params(&controller_ptr, ce, NULL, "init", NULL);
                 zend_update_property(ce, &controller_ptr, ZEND_STRL(GODA_CONTROLLER_REUQEST), request_ptr);
             }
-            zend_call_method(&controller_ptr, ce, NULL, action, strlen(action), &ret, 0, NULL, NULL);
             
+            zend_call_method(&controller_ptr, ce, NULL, action, strlen(action), NULL, 0, NULL, NULL);
             zval_ptr_dtor(&controller_ptr);
         } else {
             zend_error_noreturn(E_ERROR, "Couldn't find controller and action");

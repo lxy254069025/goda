@@ -38,7 +38,7 @@ zend_string *goda_request_get_base_uri() {
 	if ((pos = strstr(Z_STRVAL_P(uri), "?"))) {
 		base_uri = zend_string_init(Z_STRVAL_P(uri), pos - Z_STRVAL_P(uri), 0);
 	} else {
-		base_uri = zend_string_copy(Z_STR_P(uri));
+		base_uri = zend_string_dup(Z_STR_P(uri), 0);
 	}
 
 	return base_uri;
