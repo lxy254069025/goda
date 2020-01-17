@@ -10,12 +10,29 @@
 #include "goda_response.h"
 #include "goda_config.h"
 #include "goda_request.h"
-#include "goda_session.h"
-#include "goda_cookie.h"
-#include "goda_model.h"
 #include "goda_exception.h"
 
 ZEND_DECLARE_MODULE_GLOBALS(goda);
+
+int goda_call_method(zval *obj, zend_class_entry *obj_ce, const char *func_name, size_t func_name_len, zval *retval_ptr, int number, zval *param) {
+	int result;	
+	zend_fcall_info fci;	
+	fci.size = sizeof(fci);	
+	fci.object = obj ? Z_OBJ_P(obj) : NULL;	
+	fci.retval = retval_ptr;	
+	fci.param_count = number;	
+	fci.params = param;	
+	fci.no_separation = 1;	
+	ZVAL_STRINGL(&fci.function_name, func_name, func_name_len);	
+	result = zend_call_function(&fci, NULL);	
+	zval_ptr_dtor(&fci.function_name);	
+	if (result == FAILURE) {	
+		if (!EG(exception)) {	
+			zend_error_noreturn(E_CORE_ERROR, "Couldn't execute method %s%s%s", obj_ce ? ZSTR_VAL(obj_ce->name) : "", obj_ce ? "::" : "", func_name);	\
+		}	
+	}	
+	return result;
+}
 
 /* 初始化module时运行 */
 PHP_MINIT_FUNCTION(goda)
@@ -32,8 +49,6 @@ PHP_MINIT_FUNCTION(goda)
 	GODA_STARTUP(view);
 	GODA_STARTUP(config);
 	GODA_STARTUP(request);
-	GODA_STARTUP(session);
-	GODA_STARTUP(cookie);
     return SUCCESS;
 }
 

@@ -17,25 +17,7 @@
 #include "ext/pcre/php_pcre.h"
 #include "Zend/zend_exceptions.h"
 
-int goda_call_method(zval *obj, zend_class_entry *obj_ce, const char *func_name, size_t func_name_len, zval *retval_ptr, int number, zval *param) {
-	int result;	
-	zend_fcall_info fci;	
-	fci.size = sizeof(fci);	
-	fci.object = obj ? Z_OBJ_P(obj) : NULL;	
-	fci.retval = retval_ptr;	
-	fci.param_count = number;	
-	fci.params = param;	
-	fci.no_separation = 1;	
-	ZVAL_STRINGL(&fci.function_name, func_name, func_name_len);	
-	result = zend_call_function(&fci, NULL);	
-	zval_ptr_dtor(&fci.function_name);	
-	if (result == FAILURE) {	
-		if (!EG(exception)) {	
-			zend_error_noreturn(E_CORE_ERROR, "Couldn't execute method %s%s%s", obj_ce ? ZSTR_VAL(obj_ce->name) : "", obj_ce ? "::" : "", func_name);	\
-		}	
-	}	
-	return result;
-}
+int goda_call_method(zval *obj, zend_class_entry *obj_ce, const char *func_name, size_t func_name_len, zval *retval_ptr, int number, zval *param);
 
 extern zend_module_entry goda_module_entry;
 # define phpext_goda_ptr &goda_module_entry
