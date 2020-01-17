@@ -3,6 +3,7 @@
 #include "goda_loader.h"
 #include "goda_controller.h"
 #include "goda_request.h"
+#include "goda_exception.h"
 
 zend_class_entry *goda_router_ce;
 
@@ -90,7 +91,7 @@ void goda_router_run(zval *this_ptr) {
 
 
     if (Z_TYPE(handle) == IS_NULL) {
-        zend_error(E_ERROR, " 404");
+        goda_throw_exception(E_ERROR, " 404"); //
     } else {
         goda_controller_call_method(&handle, this_ptr, request_ptr);
     }

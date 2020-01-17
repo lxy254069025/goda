@@ -13,6 +13,7 @@
 #include "goda_session.h"
 #include "goda_cookie.h"
 #include "goda_model.h"
+#include "goda_exception.h"
 
 ZEND_DECLARE_MODULE_GLOBALS(goda);
 
@@ -22,6 +23,7 @@ PHP_MINIT_FUNCTION(goda)
     /* If you have INI entries, uncomment these lines
     REGISTER_INI_ENTRIES();
     */
+   	GODA_STARTUP(exception);
    	GODA_STARTUP(application);
 	GODA_STARTUP(router);
 	GODA_STARTUP(loader);
@@ -32,7 +34,6 @@ PHP_MINIT_FUNCTION(goda)
 	GODA_STARTUP(request);
 	GODA_STARTUP(session);
 	GODA_STARTUP(cookie);
-	GODA_STARTUP(model);
     return SUCCESS;
 }
 
