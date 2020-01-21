@@ -4,9 +4,9 @@
 using namespace Goda;
 
 Node *Node::matchChild(std::string part) {
-    for (auto c : m_children) {
-        if (c->m_part == part || c->m_isWild) {
-            return c;
+    for (auto node : m_children) {
+        if (node->m_part == part || node->m_isWild) {
+            return node;
         }
     }
     return nullptr;
@@ -15,10 +15,10 @@ Node *Node::matchChild(std::string part) {
 std::vector<Node *> Node::matchChildren(std::string part) {
     std::vector<Node *> nodes;
 
-    Node *node = matchChild(part);
-
-    if (node) {
-        nodes.push_back(node);
+    for (auto node : m_children) {
+        if (node->m_part == part || node->m_isWild) {
+            nodes.push_back(node);
+        }
     }
 
     return nodes;
@@ -73,8 +73,8 @@ void Node::clean(std::vector<Node *> childern) {
 }
         
 Router::~Router(){
-    for (auto r : m_roots) {
-        Node *node = r.second;
+    for (auto root : m_roots) {
+        Node *node = root.second;
         delete node;
     }
 }
