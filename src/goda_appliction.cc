@@ -75,7 +75,7 @@ ZEND_METHOD(goda_application, run) {
 }
 
 ZEND_METHOD(goda_application, app) {
-    Goda::Zval app = zend_read_static_property(goda_application_ce, ZEND_STRL(GODA_APPLICATION_APP), 1);
+    zval *app = zend_read_static_property(goda_application_ce, ZEND_STRL(GODA_APPLICATION_APP), 1);
     RETURN_ZVAL(app, 1, 0);
 }
 

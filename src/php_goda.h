@@ -19,11 +19,6 @@ extern "C" {
 #include "Zend/zend_exceptions.h"
 }
 
-#include "include/goda_string.hpp"
-#include "include/goda_zval.hpp"
-#include "include/goda_object.hpp"
-#include "include/goda_array.hpp"
-
 int goda_call_method(zval *obj, zend_class_entry *obj_ce, const char *func_name, size_t func_name_len, zval *retval_ptr, int number, zval *param);
 
 extern zend_module_entry goda_module_entry;
