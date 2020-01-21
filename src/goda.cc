@@ -12,7 +12,9 @@
 #include "goda_request.h"
 #include "goda_exception.h"
 
+BEGIN_EXTERN_C()
 ZEND_DECLARE_MODULE_GLOBALS(goda);
+END_EXTERN_C()
 
 int goda_call_method(zval *obj, zend_class_entry *obj_ce, const char *func_name, size_t func_name_len, zval *retval_ptr, int number, zval *param) {
 	int result;	

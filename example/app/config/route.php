@@ -5,10 +5,15 @@ return [
     ],
     'GET' => [
         '/' => 'Index@Index',
-        '/user' => 'User@Index'
+        '/name' => 'User@Index',
+        '/:a/c' => 'Index@aaa' 
     ],
     'ANY' => [
         '/' => '',
-        '/{name}-a' => 'Index@Aaa',
+        '/:nae' => 'Index@Aaa',
+    ],
+
+    'ERROR' => [
+        'notfound' => 'Index@notFound'
     ]
 ];

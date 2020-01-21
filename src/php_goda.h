@@ -3,6 +3,7 @@
 #ifndef PHP_GODA_H
 # define PHP_GODA_H
 
+extern "C" {
 #ifdef HAVE_CONFIG_H
 # include "config.h"
 #endif
@@ -16,6 +17,12 @@
 #include "Zend/zend_smart_str.h"
 #include "ext/pcre/php_pcre.h"
 #include "Zend/zend_exceptions.h"
+}
+
+#include "include/goda_string.hpp"
+#include "include/goda_zval.hpp"
+#include "include/goda_object.hpp"
+#include "include/goda_array.hpp"
 
 int goda_call_method(zval *obj, zend_class_entry *obj_ce, const char *func_name, size_t func_name_len, zval *retval_ptr, int number, zval *param);
 
@@ -44,12 +51,14 @@ ZEND_TSRMLS_CACHE_EXTERN()
 	ZEND_PARSE_PARAMETERS_END()
 #endif
 
+BEGIN_EXTERN_C()
 ZEND_BEGIN_MODULE_GLOBALS(goda)
 	zend_string *app_dir;
 ZEND_END_MODULE_GLOBALS(goda)
 
 extern ZEND_DECLARE_MODULE_GLOBALS(goda);
 
+END_EXTERN_C()
 
 #ifdef ZTS
 #define GODA_G(v) TSRMG(goda_globals_id, zend_goda_globals *, v)

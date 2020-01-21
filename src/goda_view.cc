@@ -114,8 +114,8 @@ zend_long goda_extract_ref_overwrite(zend_array *arr, zend_array *symbol_table) 
 
 static void goda_view_render_ob() {
     
-    zend_string *file_path; //
-    zval ret = {{0}};
+    // zend_string *file_path; //
+    // zval ret = {{0}};
 
     
 
@@ -149,12 +149,12 @@ static void goda_view_render_ob() {
 }
 
 void goda_view_render(zend_string *filename, zval *assgin) {
-    zend_file_handle file_handle;
-	zend_op_array 	*op_array;
-	char realpath[MAXPATHLEN];
+    // zend_file_handle file_handle;
+	// zend_op_array 	*op_array;
+	// char realpath[MAXPATHLEN];
     zend_string *path;
     zend_array *symbol_table;
-    zval ret = {{0}};
+    // zval ret = {{0}};
 
     symbol_table = zend_rebuild_symbol_table();
     (void)goda_extract_ref_overwrite(Z_ARRVAL_P(assgin), symbol_table);

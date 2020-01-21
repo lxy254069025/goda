@@ -73,14 +73,14 @@ ZEND_BEGIN_ARG_INFO_EX(goda_controller_render_arg, 0, 0, 2)
 ZEND_END_ARG_INFO()
 
 ZEND_METHOD(goda_controller, __construct) {
-    
-}
-
-ZEND_METHOD(goda_controller, init) {
-    zval assgin, params;
+    zval assgin;
     array_init(&assgin);
     zend_update_property(goda_controller_ce, getThis(), ZEND_STRL(GODA_CONTROLLER_ASSGIN), &assgin);
     zval_ptr_dtor(&assgin);
+}
+
+ZEND_METHOD(goda_controller, init) {
+    
 }
 
 ZEND_METHOD(goda_controller, get) {
@@ -113,7 +113,7 @@ ZEND_METHOD(goda_controller, assgin) {
 ZEND_METHOD(goda_controller, render) {
     zend_string *filename, *key;
     zend_long idx;
-    zval *val, *assgin, *value;
+    zval *val = nullptr, *assgin = nullptr, *value;
 
     ZEND_PARSE_PARAMETERS_START(1, 2)
         Z_PARAM_STR(filename)

@@ -159,6 +159,7 @@ GODA_MINIT_FUNCTION(request) {
     INIT_CLASS_ENTRY(ce, "Goda\\Request", goda_request_methods);
     goda_request_ce = zend_register_internal_class_ex(&ce, NULL);
     goda_request_ce->ce_flags |= ZEND_ACC_FINAL;
+    
     zend_declare_property_null(goda_request_ce, ZEND_STRL(GODA_REQUEST_PARAMS), ZEND_ACC_PUBLIC);
 
     return SUCCESS;

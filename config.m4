@@ -1,22 +1,26 @@
 PHP_ARG_ENABLE(goda, whether to enable goda support,
-dnl Make sure that the comment is aligned:
 [  --enable-goda          Enable goda support], no)
 
 if test "$PHP_GODA" != "no"; then
   
-  dnl # In case of no dependencies
   AC_DEFINE(HAVE_GODA, 1, [ Have goda support ])
 
+  PHP_REQUIRE_CXX()
+
   PHP_NEW_EXTENSION(goda, 
-  src/goda.c  \
-  src/goda_appliction.c  \
-  src/goda_controller.c  \
-  src/goda_view.c \
-  src/goda_router.c   \
-  src/goda_response.c \
-  src/goda_config.c \
-  src/goda_loader.c \
-  src/goda_request.c  \
-  src/goda_exception.c, 
+  src/goda.cc  \
+  src/goda_appliction.cc  \
+  src/goda_controller.cc  \
+  src/goda_view.cc \
+  src/goda_router.cc   \
+  src/goda_response.cc \
+  src/goda_config.cc \
+  src/goda_loader.cc \
+  src/goda_request.cc  \
+  src/goda_exception.cc \
+  src/router/router_trie.cc, 
   $ext_shared)
+
+  CXXFLAGS="$CXXFLAGS -Wall -Wno-unused-function -Wno-deprecated -Wno-deprecated-declarations -Wno-writable-strings -Wno-unused-variable"
+  CXXFLAGS="$CXXFLAGS -std=c++11"
 fi

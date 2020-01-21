@@ -84,16 +84,16 @@ int goda_loader_include(zend_string *filename, zval *retval) {
 	return 0;
 }
 
-int goda_loader_autoloader(char *class, size_t len) {
+int goda_loader_autoloader(char *class_name, size_t len) {
     zend_string *class_path;
 
     for (size_t i = 0; i < len; i++) {
-        if (class[i] == '\\') {
-            class[i] = '/';
+        if (class_name[i] == '\\') {
+            class_name[i] = '/';
         }
     }
 
-    class_path = strpprintf(0, "%s/%s.php", ZSTR_VAL(GODA_G(app_dir)), class);
+    class_path = strpprintf(0, "%s/%s.php", ZSTR_VAL(GODA_G(app_dir)), class_name);
     if (!goda_loader_include(class_path, NULL)) {
         zend_error(E_ERROR, "Couldn't find file: %s", ZSTR_VAL(class_path));
         return 0;
@@ -108,14 +108,14 @@ ZEND_BEGIN_ARG_INFO_EX(goda_loader_load_arginfo, 0, 0, 1)
 ZEND_END_ARG_INFO()
 
 ZEND_METHOD(goda_loader, autoloader) {
-    char *class;
+    char *class_name;
     size_t len;
 
     ZEND_PARSE_PARAMETERS_START(1,1)
-        Z_PARAM_STRING(class, len)
+        Z_PARAM_STRING(class_name, len)
     ZEND_PARSE_PARAMETERS_END();
 
-    (void)goda_loader_autoloader(class, len);
+    (void)goda_loader_autoloader(class_name, len);
 }
 
 zend_function_entry goda_loader_methods[] = {

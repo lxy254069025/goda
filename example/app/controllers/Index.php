@@ -15,4 +15,8 @@ class Index extends \Goda\Controller {
         echo "Hello Any";
         var_dump($this);
     }
+
+    public function notFound() {
+
+    }
 }
