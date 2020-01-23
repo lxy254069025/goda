@@ -1,7 +1,9 @@
 #include "php_goda.h"
+#include "php_main.h"
 #include "ext/standard/php_array.h"
 #include "goda_view.h"
 #include "goda_loader.h"
+#include "goda_exception.h"
 
 zend_class_entry *goda_view_ce;
 
@@ -111,50 +113,40 @@ zend_long goda_extract_ref_overwrite(zend_array *arr, zend_array *symbol_table) 
 	return count;
 }
 
+static int goda_view_ob(zend_op_array *op_array, zval *retval) {
+	zval result;
+	ZVAL_UNDEF(&result);
+	if (php_output_start_user(NULL, 0, PHP_OUTPUT_HANDLER_STDFLAGS) == FAILURE) {
+		php_error_docref("ref.outcontrol", E_WARNING, "failed to create buffer");
+		return 0;
+	}
+	
+	zend_execute(op_array, &result);
+	zval_ptr_dtor(&result);
 
-static void goda_view_render_ob() {
-    
-    // zend_string *file_path; //
-    // zval ret = {{0}};
+	if (EG(exception) != NULL) {
+		php_output_discard();
+	}
 
-    
+	if (php_output_get_contents(retval) == FAILURE) {
+		php_output_end();
+		php_error_docref(NULL, E_WARNING, "Unable to fetch ob content");
+		return 0;
+	}
 
-    // if (count) {
-    
-        
-    //     // if (goda_view_include_file(file_path)) {
-    //     //     zend_string_release(file_path);
-    //     // } else {
-    //     //     zend_string_release(file_path);
-    //     // }
-        
-    //     if (php_output_get_contents(&ret) == FAILURE) {
-	// 		php_output_end();
-	// 		php_error_docref(NULL, E_WARNING, "Unable to fetch ob content");
-	// 		return;
-	// 	}
-
-    //     // php_write(Z_STRVAL(ret), Z_STRLEN(ret));
-
-    //     php_var_dump(&ret, 10);
-        
-        
-	// 	if (php_output_discard() != SUCCESS ) {
-    //         zend_printf("ob end");
-	// 		return;
-	// 	}
-
-    // }
-
+	if (php_output_discard() != SUCCESS ) {
+		return 0;
+	}
+	return 1;
 }
 
-void goda_view_render(zend_string *filename, zval *assgin) {
-    // zend_file_handle file_handle;
-	// zend_op_array 	*op_array;
-	// char realpath[MAXPATHLEN];
+int goda_view_render(zend_string *filename, zval *assgin, zval *retval) {
     zend_string *path;
     zend_array *symbol_table;
-    // zval ret = {{0}};
+	int status = 0;
+	zend_file_handle file_handle;
+	zend_op_array 	*op_array;
+	char realpath[MAXPATHLEN];
 
     symbol_table = zend_rebuild_symbol_table();
     (void)goda_extract_ref_overwrite(Z_ARRVAL_P(assgin), symbol_table);
@@ -162,9 +154,39 @@ void goda_view_render(zend_string *filename, zval *assgin) {
     zend_string *file_trim = php_trim(filename, "/", 1, 3);
 
     path = strpprintf(0, "%s/views/%s.php", ZSTR_VAL(GODA_G(app_dir)), ZSTR_VAL(file_trim));
-	goda_loader_include(path, NULL);
-    zend_string_release(path);
-    zend_string_release(file_trim);
+	zend_string_release(file_trim);
+
+	if (!VCWD_REALPATH(ZSTR_VAL(path), realpath)) {
+		zend_string_release(path);
+		goda_throw_exception(E_ERROR, "Failed opening template %s: %s", ZSTR_VAL(path), strerror(errno));
+		return 0;
+	}
+
+	file_handle.filename = ZSTR_VAL(path);
+	file_handle.free_filename = 0;
+	file_handle.type = ZEND_HANDLE_FILENAME;
+	file_handle.opened_path = NULL;
+	file_handle.handle.fp = NULL;
+
+	op_array = zend_compile_file(&file_handle, ZEND_INCLUDE);
+
+	if (op_array) {
+		if (file_handle.handle.stream.handle) {
+			if (!file_handle.opened_path) {
+				file_handle.opened_path = zend_string_copy(path);
+			}
+			zend_hash_add_empty_element(&EG(included_files), file_handle.opened_path);
+		}
+
+		status = goda_view_ob(op_array, retval);
+		
+		destroy_op_array(op_array);
+		efree(op_array);
+	} 
+	zend_destroy_file_handle(&file_handle);
+	zend_string_release(path);
+
+	return status;
 }
 
 
@@ -182,7 +204,7 @@ ZEND_METHOD(goda_view, render) {
         Z_PARAM_OPTIONAL
         Z_PARAM_ARRAY(val)
     ZEND_PARSE_PARAMETERS_END();
-    goda_view_render(filename, val);
+    // goda_view_render(filename, val);
 }
 
 zend_function_entry goda_view_methods[] = {

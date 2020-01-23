@@ -6,13 +6,14 @@ use Goda\Application;
 class Index extends \Goda\Controller {
 
     public function Index() {
-        
+        $this->renderText("HHHHH");
+        $this->renderJson([1=>2]);
         $this->render("index/index",['h'=>'Hello World!']);
     }
 
     public function Aaa() {
         echo "Hello Any";
-        var_dump($this);
+        $this->redirect("/");
     }
 
     public function notFound() {

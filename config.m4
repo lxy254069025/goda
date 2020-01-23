@@ -18,7 +18,7 @@ if test "$PHP_GODA" != "no"; then
   src/goda_loader.cc \
   src/goda_request.cc  \
   src/goda_exception.cc \
-  src/router/router_trie.cc, 
+  src/router/router_trie.cc,
   $ext_shared)
 
   CXXFLAGS="$CXXFLAGS -Wall -Wno-unused-function -Wno-deprecated -Wno-deprecated-declarations -Wno-writable-strings -Wno-unused-variable"

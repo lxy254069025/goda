@@ -3,7 +3,6 @@
 
 #define GODA_ROUTER_CONTROLLER      "controller"
 #define GODA_ROUTER_ACTION          "action"
-#define GODA_ROUTER_STATUS          "status"
 
 
 extern zend_class_entry *goda_router_ce;

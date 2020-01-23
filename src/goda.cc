@@ -91,6 +91,9 @@ PHP_MINFO_FUNCTION(goda)
 {
 	php_info_print_table_start();
 	php_info_print_table_header(2, "goda support", GODA_LOGO_BASE64"enabled");
+	php_info_print_table_row(2, "Author", "Lu xixi");
+	php_info_print_table_row(2, "Website", "www.a22c.com");
+	php_info_print_table_row(2, "Version", PHP_GODA_VERSION);
 	php_info_print_table_end();
 }
 /* }}} */

@@ -9,69 +9,92 @@ void goda_response_instance(zval *this_ptr) {
     }
 }
 
-ZEND_BEGIN_ARG_INFO_EX(goda_response_render_json_arg, 0, 0, 1)
-    ZEND_ARG_ARRAY_INFO(0, array, 0)
-ZEND_END_ARG_INFO()
-
-ZEND_BEGIN_ARG_INFO_EX(goda_response_render_text_arg, 0, 0, 1)
-    ZEND_ARG_INFO(0, str)
-ZEND_END_ARG_INFO()
-
-ZEND_METHOD(goda_response, renderJson) {
-    zval *array, json_ecode, retval, params[2];
-    
-    ZEND_PARSE_PARAMETERS_START(1, 1)
-        Z_PARAM_ARRAY(array)
-    ZEND_PARSE_PARAMETERS_END();
-
-    ZVAL_STRING(&json_ecode, "json_encode");
-    
-    ZVAL_ZVAL(&params[0], array, 1, 0);
-    ZVAL_LONG(&params[1], 1<<8);
-
-    ZVAL_NULL(&retval);
-    if (call_user_function(EG(function_table), NULL, &json_ecode, &retval, 2, params) == SUCCESS) {
-        php_write(Z_STRVAL_P(&retval), Z_STRLEN_P(&retval));
-    } 
-    zval_ptr_dtor(&json_ecode);
-    zval_ptr_dtor(&retval);
-    zval_ptr_dtor(&params[0]);
-    zval_ptr_dtor(&params[1]);
+void goda_response_set_header(zval *this_ptr, zend_string *key, zend_string *value) {
+    zval *header = zend_read_property(goda_response_ce, this_ptr, ZEND_STRL(GODA_RESPONSE_HEADER), 1, NULL);
+    if (Z_TYPE_P(header) == IS_ARRAY) {
+        add_assoc_str(header, ZSTR_VAL(key), value);
+    } else {
+        zval array;
+        array_init(&array);
+        add_assoc_str(&array, ZSTR_VAL(key), value);
+        zend_update_property(goda_response_ce, this_ptr, ZEND_STRL(GODA_RESPONSE_HEADER), &array);
+    }
 }
 
-ZEND_METHOD(goda_response, renderText) {
-    char *str;
-    size_t len;
-    ZEND_PARSE_PARAMETERS_START(1, 1)
-        Z_PARAM_STRING(str, len)
-    ZEND_PARSE_PARAMETERS_END();
+void goda_response_str_send(zval *this_ptr, zend_string *str) {
+    zval *header = zend_read_property(goda_response_ce, this_ptr, ZEND_STRL(GODA_RESPONSE_HEADER), 1, NULL);
+    if (!ZVAL_IS_NULL(header)) {
+        sapi_header_line ctr = {0};
+        zval *val;
+        zend_string *key;
+        ulong idx;
 
-    php_write(str, len);
+        ZEND_HASH_FOREACH_KEY_VAL(Z_ARRVAL_P(header), idx, key, val) {
+            if (key) {
+                ctr.line_len    = spprintf(&(ctr.line), 0, "%s: %s", ZSTR_VAL(key), Z_STRVAL_P(val));
+            } else {
+                ctr.line_len    = spprintf(&(ctr.line), 0, "%lu: %s", idx, Z_STRVAL_P(val));
+            }
+            
+            ctr.response_code   = 0;
+            if (sapi_header_op(SAPI_HEADER_REPLACE, &ctr) == SUCCESS) {
+                efree(ctr.line);
+                return;
+            }
+        }ZEND_HASH_FOREACH_END();
+        efree(ctr.line);
+    }
+
+    if (str) {
+        php_write(ZSTR_VAL(str), ZSTR_LEN(str));
+    }
 }
 
-ZEND_METHOD(goda_response, redirect) {
-    char *str;
-    size_t len;
-    sapi_header_line ctr = {0};
-    
-    ZEND_PARSE_PARAMETERS_START(1, 1)
-        Z_PARAM_STRING(str, len)
-    ZEND_PARSE_PARAMETERS_END();
+void goda_response_send(zval *this_ptr, zval *body) {
+    zval *header = zend_read_property(goda_response_ce, this_ptr, ZEND_STRL(GODA_RESPONSE_HEADER), 1, NULL);
+    if (!ZVAL_IS_NULL(header)) {
+        sapi_header_line ctr = {0};
+        zval *val;
+        zend_string *key;
+        ulong idx;
 
-	ctr.line_len    = spprintf(&(ctr.line), 0, "%s %s", "Location:", str);
-	ctr.response_code   = 0;
-	if (sapi_header_op(SAPI_HEADER_REPLACE, &ctr) == SUCCESS) {
-		efree(ctr.line);
-        RETURN_FALSE;
-	}
-	efree(ctr.line);
-    RETURN_TRUE;
+        ZEND_HASH_FOREACH_KEY_VAL(Z_ARRVAL_P(header), idx, key, val) {
+            if (key) {
+                ctr.line_len    = spprintf(&(ctr.line), 0, "%s: %s", ZSTR_VAL(key), Z_STRVAL_P(val));
+            } else {
+                ctr.line_len    = spprintf(&(ctr.line), 0, "%lu: %s", idx, Z_STRVAL_P(val));
+            }
+            
+            ctr.response_code   = 0;
+            if (sapi_header_op(SAPI_HEADER_REPLACE, &ctr) == SUCCESS) {
+                efree(ctr.line);
+                return;
+            }
+        }ZEND_HASH_FOREACH_END();
+        efree(ctr.line);
+    }
+
+    if (body) {
+        php_write(Z_STRVAL_P(body), Z_STRLEN_P(body));
+    }
+}
+
+ZEND_BEGIN_ARG_INFO_EX(goda_response_header_arg, 0, 0, 2)
+    ZEND_ARG_INFO(0, key)
+    ZEND_ARG_INFO(0, value)
+ZEND_END_ARG_INFO()
+
+ZEND_METHOD(goda_response, setHeader) {
+
+}
+
+ZEND_METHOD(goda_response, getHeader) {
+
 }
 
 zend_function_entry goda_response_methods[] = {
-    ZEND_ME(goda_response, renderJson, goda_response_render_json_arg, ZEND_ACC_PUBLIC)
-    ZEND_ME(goda_response, renderText, goda_response_render_text_arg, ZEND_ACC_PUBLIC)
-    ZEND_ME(goda_response, redirect, goda_response_render_text_arg, ZEND_ACC_PUBLIC)
+    ZEND_ME(goda_response, setHeader, goda_response_header_arg, ZEND_ACC_PUBLIC)
+    ZEND_ME(goda_response, getHeader, NULL, ZEND_ACC_PUBLIC)
     ZEND_FE_END
 };
 
@@ -80,6 +103,8 @@ GODA_MINIT_FUNCTION(response) {
     INIT_CLASS_ENTRY(ce, "Goda\\Response", goda_response_methods);
     goda_response_ce = zend_register_internal_class(&ce);
     goda_response_ce->ce_flags |= ZEND_ACC_FINAL;
+
+    zend_declare_property_null(goda_response_ce, ZEND_STRL(GODA_RESPONSE_HEADER), ZEND_ACC_PROTECTED);
 
     return SUCCESS;
 }

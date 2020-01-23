@@ -24,7 +24,7 @@ int goda_call_method(zval *obj, zend_class_entry *obj_ce, const char *func_name,
 extern zend_module_entry goda_module_entry;
 # define phpext_goda_ptr &goda_module_entry
 
-# define PHP_GODA_VERSION "0.1.0"
+# define PHP_GODA_VERSION "0.1.2"
 
 # if defined(ZTS) && defined(COMPILE_DL_GODA)
 ZEND_TSRMLS_CACHE_EXTERN()

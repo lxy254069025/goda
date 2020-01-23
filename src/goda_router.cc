@@ -138,7 +138,7 @@ int goda_router_parase_routeing(zval *this_ptr, zval *request_ptr) {
         }
     } else {
         /**设置404**/
-        zend_update_property_long(goda_router_ce, this_ptr, ZEND_STRL(GODA_ROUTER_STATUS), 404);
+        SG(sapi_headers).http_response_code = 404;
         auto handle = tree->getHandler("ERROR", "notfound");
         if (handle.length() > 0) {
             auto controller_action = tree->parsePattern(handle, "@");
@@ -165,10 +165,7 @@ void goda_router_run(zval *this_ptr, zval *request_ptr) {
     
     controller = zend_read_property(goda_router_ce, this_ptr, ZEND_STRL(GODA_ROUTER_CONTROLLER), 1, NULL);
     action = zend_read_property(goda_router_ce, this_ptr, ZEND_STRL(GODA_ROUTER_ACTION), 1, NULL);
-    status = zend_read_property(goda_router_ce, this_ptr, ZEND_STRL(GODA_ROUTER_STATUS), 1, NULL);
     
-    params = goda_request_get_params(request_ptr);
-
     zend_string *action_name = zend_string_tolower(Z_STR_P(action));
     zend_string *class_controller = strpprintf(0, "controllers\\%s", Z_STRVAL_P(controller));
     zend_class_entry *ce;
@@ -228,6 +225,5 @@ GODA_MINIT_FUNCTION(router) {
 
     zend_declare_property_null(goda_router_ce, ZEND_STRL(GODA_ROUTER_CONTROLLER), ZEND_ACC_PUBLIC);
     zend_declare_property_null(goda_router_ce, ZEND_STRL(GODA_ROUTER_ACTION), ZEND_ACC_PUBLIC);
-    zend_declare_property_long(goda_router_ce, ZEND_STRL(GODA_ROUTER_STATUS), 200, ZEND_ACC_PUBLIC);
     return SUCCESS;
 }
