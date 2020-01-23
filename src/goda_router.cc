@@ -4,10 +4,8 @@
 #include "goda_controller.h"
 #include "goda_request.h"
 #include "goda_exception.h"
-#include <iostream>
-#include "router/router_trie.hpp"
 
-#include <vector>
+#include "router/router_trie.hpp"
 
 zend_class_entry *goda_router_ce;
 zend_object_handlers goda_router_handlers;
