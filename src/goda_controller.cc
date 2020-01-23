@@ -8,56 +8,6 @@
 
 zend_class_entry *goda_controller_ce;
 
-/**
- * handle Index@Index 
- * router_ptr is router object.
- * request is request object. 
- */
-void goda_controller_call_method(zval *handle, zval *router_ptr, zval *request_ptr) {
-    char *controller, *action;
-    
-    if (Z_TYPE_P(handle) == IS_STRING && Z_STRLEN_P(handle) > 0) {
-        char *p = Z_STRVAL_P(handle);
-        char *pos;
-        if ((pos = strchr(p,'@'))) {
-            controller = estrndup(p,  Z_STRLEN_P(handle)- strlen(pos));
-            while (*pos == '@') {
-                pos++;
-            }
-            action = estrdup(pos);
-            zend_str_tolower(action, strlen(action));
-        } else {
-            zend_error_noreturn(E_ERROR, "Couldn't find controller and action");
-            return;
-        }
-
-        zend_string *class_controller = strpprintf(0, "controllers\\%s", controller);
-        zend_class_entry *ce;
-        ce = zend_lookup_class(class_controller);
-        zend_string_release(class_controller);
-        if (ce) {
-            zval controller_ptr;
-            object_init_ex(&controller_ptr, ce);
-            zend_str_tolower(action, strlen(action));
-            if (instanceof_function(ce, goda_controller_ce)) {
-                 /* call method construct */
-                zend_call_method_with_0_params(&controller_ptr, ce, &ce->constructor, "__construct", NULL);
-                /* call init*/
-                zend_call_method_with_0_params(&controller_ptr, ce, NULL, "init", NULL);
-                zend_update_property(ce, &controller_ptr, ZEND_STRL(GODA_CONTROLLER_REUQEST), request_ptr);
-            }
-            
-            zend_call_method(&controller_ptr, ce, NULL, action, strlen(action), NULL, 0, NULL, NULL);
-            zval_ptr_dtor(&controller_ptr);
-        } else {
-            zend_error_noreturn(E_ERROR, "Couldn't find controller and action");
-        }
-
-        efree(controller);
-        efree(action);
-    }
-}
-
 ZEND_BEGIN_ARG_INFO_EX(goda_controller_get_arg, 0, 0, 1)
     ZEND_ARG_INFO(0, key)
 ZEND_END_ARG_INFO()
@@ -73,10 +23,14 @@ ZEND_BEGIN_ARG_INFO_EX(goda_controller_render_arg, 0, 0, 2)
 ZEND_END_ARG_INFO()
 
 ZEND_METHOD(goda_controller, __construct) {
-    zval assgin;
+    zval assgin, response = {{0}};
     array_init(&assgin);
     zend_update_property(goda_controller_ce, getThis(), ZEND_STRL(GODA_CONTROLLER_ASSGIN), &assgin);
     zval_ptr_dtor(&assgin);
+
+    goda_response_instance(&response);
+    zend_update_property(goda_controller_ce, getThis(), ZEND_STRL(GODA_CONTROLLER_RESPONSE), &response);
+    zval_ptr_dtor(&response);
 }
 
 ZEND_METHOD(goda_controller, init) {
@@ -91,9 +45,9 @@ ZEND_METHOD(goda_controller, get) {
     ZEND_PARSE_PARAMETERS_END();
 
     zval *request_ptr = zend_read_property(goda_controller_ce, getThis(), ZEND_STRL(GODA_CONTROLLER_REUQEST), 1, NULL);
-    zval *params = goda_request_get_params(request_ptr, key);
-    if (params) {
-        RETURN_ZVAL(params, 1, 0);
+    zval *param = goda_request_get_param(request_ptr, key);
+    if (param) {
+        RETURN_ZVAL(param, 1, 0);
     }
     RETURN_STRING(ret);
 }
@@ -152,6 +106,7 @@ GODA_MINIT_FUNCTION(controller) {
 
     zend_declare_property_null(goda_controller_ce, ZEND_STRL(GODA_CONTROLLER_REUQEST), ZEND_ACC_PUBLIC);
     zend_declare_property_null(goda_controller_ce, ZEND_STRL(GODA_CONTROLLER_ASSGIN), ZEND_ACC_PUBLIC);
+    zend_declare_property_null(goda_controller_ce, ZEND_STRL(GODA_CONTROLLER_RESPONSE), ZEND_ACC_PUBLIC);
     
 
     return SUCCESS;

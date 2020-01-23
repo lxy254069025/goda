@@ -3,6 +3,12 @@
 
 zend_class_entry *goda_response_ce;
 
+void goda_response_instance(zval *this_ptr) {
+    if (Z_TYPE_P(this_ptr) == IS_UNDEF) {
+        object_init_ex(this_ptr, goda_response_ce);
+    }
+}
+
 ZEND_BEGIN_ARG_INFO_EX(goda_response_render_json_arg, 0, 0, 1)
     ZEND_ARG_ARRAY_INFO(0, array, 0)
 ZEND_END_ARG_INFO()
@@ -73,7 +79,7 @@ GODA_MINIT_FUNCTION(response) {
     zend_class_entry ce;
     INIT_CLASS_ENTRY(ce, "Goda\\Response", goda_response_methods);
     goda_response_ce = zend_register_internal_class(&ce);
-    goda_response_ce->ce_flags |= ZEND_ACC_TRAIT;
+    goda_response_ce->ce_flags |= ZEND_ACC_FINAL;
 
     return SUCCESS;
 }

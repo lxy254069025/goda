@@ -67,7 +67,6 @@ Node::~Node() {
 
 void Node::clean(std::vector<Node *> childern) {
     for (auto node : childern) {
-        std::cout << "我在删除：" + node->m_part + " pattern :" + node->m_pattern << std::endl;
         delete node;
     }
 }
@@ -81,8 +80,8 @@ Router::~Router(){
 
 void Router::addRoute(std::string method, std::string pattern, std::string handler) {
     auto parts = parsePattern(pattern);
-    
     std::string key = method + '-' + pattern;
+    
     auto iter = m_roots.find(method);
     if (iter == m_roots.end()) {
         m_roots[method] = new Node();
@@ -94,20 +93,24 @@ void Router::addRoute(std::string method, std::string pattern, std::string handl
 
 tuple_ret Router::getRoute(std::string method, std::string path) {
     auto searchParts = parsePattern(path);
-
+    
     Node *root = nullptr;
 
     tuple_ret ret;
 
+METHOD:
     auto iter = m_roots.find(method);
     if (iter != m_roots.end()) {
         root = m_roots[method];
+    } else {
+        return ret;
     }
 
     auto n = root->search(searchParts, 0);
     std::map<std::string, std::string> params;
 
     if (n != nullptr) {
+        
         auto parts = parsePattern(n->m_pattern);
         for (size_t i = 0; i < parts.size(); i++) {
             std::string part = parts[i];
@@ -121,6 +124,12 @@ tuple_ret Router::getRoute(std::string method, std::string path) {
 
         ret = std::make_tuple(n, params);
         return ret;
+        
+    } else {
+        if (method != "ANY") {
+            method = "ANY";
+            goto METHOD;
+        }
     }
     return ret;
 }

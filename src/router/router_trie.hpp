@@ -54,8 +54,19 @@ namespace Goda {
         tuple_ret getRoute(std::string method, std::string path);
 
         std::string getHandler(std::string method, std::string pattern) {
+        HANDLER:
             std::string key = method + "-" + pattern;
-            return m_handlers[key];
+            auto pos = m_handlers.find(key);
+            if (pos != m_handlers.end()) {
+                return m_handlers[key];
+            } else {
+                if (method != "ANY") {
+                    method = "ANY";
+                    goto HANDLER;
+                }
+            }
+             
+            return "";
         }
 
     private:
