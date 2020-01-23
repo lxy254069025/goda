@@ -18,6 +18,7 @@ void goda_response_set_header(zval *this_ptr, zend_string *key, zend_string *val
         array_init(&array);
         add_assoc_str(&array, ZSTR_VAL(key), value);
         zend_update_property(goda_response_ce, this_ptr, ZEND_STRL(GODA_RESPONSE_HEADER), &array);
+        zval_ptr_dtor(&array);
     }
 }
 
