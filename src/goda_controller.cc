@@ -86,7 +86,7 @@ ZEND_METHOD(goda_controller, render) {
     ZEND_PARSE_PARAMETERS_END();
 
     ZVAL_UNDEF(&view_result);
-    array_init(&render_val);
+    ZVAL_UNDEF(&render_val);
     if (saveData) {
         if (val) {
             assgin = zend_read_property(goda_controller_ce, getThis(), ZEND_STRL(GODA_CONTROLLER_ASSGIN), 1, NULL);

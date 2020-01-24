@@ -179,7 +179,7 @@ int goda_view_render(zend_string *filename, zval *assgin, zval *retval) {
 		}
 
 		status = goda_view_ob(op_array, retval);
-		
+
 		destroy_op_array(op_array);
 		efree(op_array);
 	} 
@@ -190,25 +190,8 @@ int goda_view_render(zend_string *filename, zval *assgin, zval *retval) {
 }
 
 
-ZEND_BEGIN_ARG_INFO_EX(goda_view_render_arg, 0, 0, 2)
-    ZEND_ARG_INFO(0, filename)
-    ZEND_ARG_ARRAY_INFO(0, val, 1)
-ZEND_END_ARG_INFO()
-
-ZEND_METHOD(goda_view, render) {
-    zend_string *filename;
-    zval *val;
-
-    ZEND_PARSE_PARAMETERS_START(1, 2)
-        Z_PARAM_STR(filename)
-        Z_PARAM_OPTIONAL
-        Z_PARAM_ARRAY(val)
-    ZEND_PARSE_PARAMETERS_END();
-    // goda_view_render(filename, val);
-}
 
 zend_function_entry goda_view_methods[] = {
-    ZEND_ME(goda_view, render, goda_view_render_arg, ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
     ZEND_FE_END
 };
 
