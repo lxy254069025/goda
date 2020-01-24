@@ -50,21 +50,6 @@ ZEND_METHOD(goda_application, __construct) {
 }
 
 /**
- * 兼容swoole, 1、$request 2、$response
- */
-ZEND_METHOD(goda_application, swoole) {
-    // zval *request, *response;
-    // ZEND_PARSE_PARAMETERS_START(2, 2)
-    //     Z_PARAM_OBJECT(request)
-    //     Z_PARAM_OBJECT(response)
-    // ZEND_PARSE_PARAMETERS_END();
-
-    // zend_update_property(goda_application_ce, getThis(), ZEND_STRL(GODA_APPLICATION_REQUEST), request);
-    // zend_update_property(goda_application_ce, getThis(), ZEND_STRL(GODA_APPLICATION_RESPONSE), response);
-    // RETURN_ZVAL(getThis(), 1, 0);
-}
-
-/**
  * 引导程序，没有设置request,response的话，会加载自己的。
  */
 ZEND_METHOD(goda_application, bootstrap) {
@@ -105,7 +90,6 @@ ZEND_METHOD(goda_application, __destruct) {
 
 zend_function_entry goda_application_methods[] = {
     ZEND_ME(goda_application, __construct, goda_app_ctor_arginfo, ZEND_ACC_PUBLIC|ZEND_ACC_CTOR)
-    ZEND_ME(goda_application, swoole, NULL, ZEND_ACC_PUBLIC)
     ZEND_ME(goda_application, bootstrap, NULL, ZEND_ACC_PUBLIC)
     ZEND_ME(goda_application, run, goda_app_run_arginfo, ZEND_ACC_PUBLIC)
     ZEND_ME(goda_application, app, NULL, ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
