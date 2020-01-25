@@ -143,7 +143,6 @@ ZEND_METHOD(goda_controller, renderJson) {
 
     ZVAL_NULL(&retval);
     if (call_user_function(EG(function_table), NULL, &json_ecode, &retval, 2, params) == SUCCESS) {
-        php_write(Z_STRVAL_P(&retval), Z_STRLEN_P(&retval));
         zval *response_ptr = zend_read_property(goda_controller_ce, getThis(), ZEND_STRL(GODA_CONTROLLER_RESPONSE), 1, NULL);
         goda_response_send(response_ptr, &retval);
     } 
