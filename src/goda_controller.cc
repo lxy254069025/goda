@@ -99,9 +99,9 @@ ZEND_METHOD(goda_controller, render) {
         }
     }
 
-    if (Z_TYPE(render_val) == IS_UNDEF) {
-        array_init(&render_val);
-    }
+    // if (Z_TYPE(render_val) == IS_UNDEF) {
+    //     array_init(&render_val);
+    // }
 
     if (goda_view_render(filename, &render_val, &view_result) == 0) {
         zval_ptr_dtor(&view_result);
