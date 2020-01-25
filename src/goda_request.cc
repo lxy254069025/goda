@@ -85,7 +85,6 @@ ZEND_END_ARG_INFO()
 
 ZEND_METHOD(goda_request, get) {
     zend_string *key;
-    char *ret = "";
     ZEND_PARSE_PARAMETERS_START(1, 1)
         Z_PARAM_STR(key)
     ZEND_PARSE_PARAMETERS_END();
@@ -94,7 +93,7 @@ ZEND_METHOD(goda_request, get) {
     if (param) {
         RETURN_ZVAL(param, 1, 0);
     }
-    RETURN_STRING(ret);
+    RETURN_EMPTY_STRING();
 }
 
 ZEND_METHOD(goda_request, setUrl) {
@@ -111,7 +110,8 @@ ZEND_METHOD(goda_request, setUrl) {
 }
 
 ZEND_METHOD(goda_request, method) {
-    RETURN_STRING(goda_request_get_method());
+    const char *method = goda_request_get_method();
+    RETURN_STRING(method);
 }
 
 ZEND_METHOD(goda_request, getUrl) {
