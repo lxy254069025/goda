@@ -100,7 +100,6 @@ ZEND_METHOD(goda_controller, render) {
 
     if (Z_TYPE(render_val) == IS_UNDEF) {
         array_init(&render_val);
-        add_assoc_bool(&render_val, "isSaveData", saveData);
     }
 
     if (goda_view_render(filename, &render_val, &view_result) == 0) {
