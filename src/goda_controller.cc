@@ -46,7 +46,6 @@ ZEND_METHOD(goda_controller, __construct) {
 
 ZEND_METHOD(goda_controller, get) {
     zend_string *key;
-    char *ret = "";
     ZEND_PARSE_PARAMETERS_START(1, 1)
         Z_PARAM_STR(key)
     ZEND_PARSE_PARAMETERS_END();
@@ -56,7 +55,7 @@ ZEND_METHOD(goda_controller, get) {
     if (param) {
         RETURN_ZVAL(param, 1, 0);
     }
-    RETURN_STRING(ret);
+    RETURN_EMPTY_STRING();
 }
 
 ZEND_METHOD(goda_controller, assgin) {
