@@ -85,7 +85,7 @@ ZEND_METHOD(goda_controller, render) {
     ZEND_PARSE_PARAMETERS_END();
 
     ZVAL_UNDEF(&view_result);
-    ZVAL_UNDEF(&render_val);
+    // ZVAL_UNDEF(&render_val);
     if (saveData) {
         if (val) {
             assgin = zend_read_property(goda_controller_ce, getThis(), ZEND_STRL(GODA_CONTROLLER_ASSGIN), 1, NULL);
@@ -99,7 +99,7 @@ ZEND_METHOD(goda_controller, render) {
     }
 
     if (Z_TYPE(render_val) == IS_UNDEF) {
-        ZVAL_EMPTY_ARRAY(&render_val);
+        array_init(&render_val);
     }
 
     if (goda_view_render(filename, &render_val, &view_result) == 0) {
