@@ -21,9 +21,9 @@ namespace Goda {
 
         std::vector<Node *> matchChildren(std::string part);
 
-        void insert(std::string pattern, std::vector<std::string> parts, int height);
+        void insert(std::string pattern, std::vector<std::string> parts, size_t height);
 
-        Node *search(std::vector<std::string> parts, int height);
+        Node *search(std::vector<std::string> parts, size_t height);
 
         std::map<std::string, std::string> getParams(std::string path);
 
@@ -49,7 +49,7 @@ namespace Goda {
 
         void addRoute(std::string method, std::string patter, std::string handler);
 
-        std::string vcStringJoin(std::vector<std::string> vstr, int start_pos);
+        std::string vcStringJoin(std::vector<std::string> vstr, size_t start_pos);
 
         tuple_ret getRoute(std::string method, std::string path);
 

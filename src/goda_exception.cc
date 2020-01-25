@@ -5,10 +5,9 @@ zend_class_entry *goda_exception_ce;
 void goda_throw_exception(int type, char *format, ...) {
     va_list args;
 	char *message;
-	uint msg_len;
 
 	va_start(args, format);
-	msg_len = vspprintf(&message, 0, format, args);
+	vspprintf(&message, 0, format, args);
 	va_end(args);
     
     zend_throw_exception(goda_exception_ce, message, type);

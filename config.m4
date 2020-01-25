@@ -21,6 +21,6 @@ if test "$PHP_GODA" != "no"; then
   src/router/router_trie.cc,
   $ext_shared)
 
-  CXXFLAGS="$CXXFLAGS -Wall -Wno-unused-function -Wno-deprecated -Wno-deprecated-declarations -Wno-writable-strings -Wno-unused-variable"
+  CXXFLAGS="$CXXFLAGS -Wall -Wno-unused-function -Wno-deprecated -Wno-deprecated-declarations -Wno-writable-strings -Wno-unused-variable -Wno-writable-strings"
   CXXFLAGS="$CXXFLAGS -std=c++11"
 fi

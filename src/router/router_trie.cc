@@ -24,7 +24,7 @@ std::vector<Node *> Node::matchChildren(std::string part) {
     return nodes;
 }
 
-void Node::insert(std::string pattern, std::vector<std::string> parts, int height) {
+void Node::insert(std::string pattern, std::vector<std::string> parts, size_t height) {
     if (parts.size() == height) {
         m_pattern = pattern;
         return;
@@ -40,7 +40,7 @@ void Node::insert(std::string pattern, std::vector<std::string> parts, int heigh
     child->insert(pattern, parts, height + 1);
 }
 
-Node *Node::search(std::vector<std::string> parts, int height) {
+Node *Node::search(std::vector<std::string> parts, size_t height) {
     if (parts.size() == height || m_part[0] == '*') {
         if (m_pattern.empty()) {
             return nullptr;
@@ -134,7 +134,7 @@ METHOD:
     return ret;
 }
 
-std::string Router::vcStringJoin(std::vector<std::string> vstr, int start_pos) {
+std::string Router::vcStringJoin(std::vector<std::string> vstr, size_t start_pos) {
     std::string new_str;
     size_t len = vstr.size();
     for (size_t i = 0; i < len; i++) {
