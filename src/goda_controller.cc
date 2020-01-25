@@ -74,7 +74,7 @@ ZEND_METHOD(goda_controller, render) {
     zend_string *filename, *key;
     zend_long idx;
     zval *val, *assgin, *value;
-    zval view_result, render_val = {{0}};
+    zval view_result, render_val;
     zend_bool saveData = 1;
 
     ZEND_PARSE_PARAMETERS_START(1, 3)
@@ -85,13 +85,14 @@ ZEND_METHOD(goda_controller, render) {
     ZEND_PARSE_PARAMETERS_END();
 
     ZVAL_UNDEF(&view_result);
-    // ZVAL_UNDEF(&render_val);
+    ZVAL_UNDEF(&render_val);
     if (saveData) {
+        assgin = zend_read_property(goda_controller_ce, getThis(), ZEND_STRL(GODA_CONTROLLER_ASSGIN), 1, NULL);
         if (val) {
-            assgin = zend_read_property(goda_controller_ce, getThis(), ZEND_STRL(GODA_CONTROLLER_ASSGIN), 1, NULL);
             zend_hash_merge(Z_ARRVAL_P(assgin), Z_ARRVAL_P(val), zval_add_ref, 0);
-            ZVAL_COPY_VALUE(&render_val, assgin);
         }
+
+        ZVAL_COPY_VALUE(&render_val, assgin);
     } else {
         if (val) {
             ZVAL_COPY_VALUE(&render_val, val);
