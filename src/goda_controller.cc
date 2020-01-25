@@ -75,7 +75,7 @@ ZEND_METHOD(goda_controller, render) {
     zend_string *filename, *key;
     zend_long idx;
     zval *val, *assgin, *value;
-    zval view_result, render_val;
+    zval view_result, render_val = {{0}};
     zend_bool saveData = 1;
 
     ZEND_PARSE_PARAMETERS_START(1, 3)
