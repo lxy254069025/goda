@@ -132,7 +132,7 @@ int goda_view_render(zend_string *filename, zval *assgin, zval *retval) {
     symbol_table = zend_rebuild_symbol_table();
     (void)goda_extract_ref_overwrite(Z_ARRVAL_P(assgin), symbol_table);
 	
-    zend_string *file_trim = php_trim(filename, "/", sizeof("/")-1, 3);
+    zend_string *file_trim = php_trim(filename, (char *)"/", sizeof("/")-1, 3);
 
     path = strpprintf(0, "%s/views/%s.php", ZSTR_VAL(GODA_G(app_dir)), ZSTR_VAL(file_trim));
 	zend_string_release(file_trim);

@@ -31,7 +31,7 @@ ZEND_METHOD(goda_application, __construct) {
         zend_error(E_ERROR, "The application can be initialized");
         RETURN_FALSE;
     }
-    GODA_G(app_dir) = php_trim(dir, "/", sizeof("/")-1, 2);
+    GODA_G(app_dir) = php_trim(dir, (char *)"/", sizeof("/")-1, 2);
     goda_loader_instance();
 
     goda_router_instance(&router_object);
