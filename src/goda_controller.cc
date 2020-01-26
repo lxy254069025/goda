@@ -73,16 +73,9 @@ ZEND_METHOD(goda_controller, assgin) {
 ZEND_METHOD(goda_controller, render) {
     zend_string *filename, *key;
     zend_long idx;
-    zval *val, *assgin, *value;
+    zval *val = NULL, *assgin, *value;
     zval view_result, render_val;
     zend_bool saveData = 1;
-
-    ZEND_PARSE_PARAMETERS_START(1, 3)
-        Z_PARAM_STR(filename)
-        Z_PARAM_OPTIONAL
-        Z_PARAM_ARRAY(val)
-        Z_PARAM_BOOL(saveData)
-    ZEND_PARSE_PARAMETERS_END();
 
     if (zend_parse_parameters(ZEND_NUM_ARGS(), "S|ab", &filename, &val, &saveData) == FAILURE) {
 		return;
@@ -92,11 +85,9 @@ ZEND_METHOD(goda_controller, render) {
     ZVAL_UNDEF(&render_val);
     if (saveData) {
         assgin = zend_read_property(goda_controller_ce, getThis(), ZEND_STRL(GODA_CONTROLLER_ASSGIN), 1, NULL);
-        if (val) {
-            zend_printf("111111111111111111111111 <br>");
-            // Z_TRY_ADDREF_P(val);
-            
-            // zend_hash_merge(Z_ARRVAL_P(assgin), Z_ARRVAL_P(val), zval_add_ref, 1);
+        
+        if (val && IS_ARRAY == Z_TYPE_P(val) && zend_hash_num_elements(Z_ARRVAL_P(val)) > 0) {
+            zend_hash_merge(Z_ARRVAL_P(assgin), Z_ARRVAL_P(val), zval_add_ref, 1);
         }
 
         ZVAL_COPY_VALUE(&render_val, assgin);
