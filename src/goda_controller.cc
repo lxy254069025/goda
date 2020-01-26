@@ -104,7 +104,7 @@ ZEND_METHOD(goda_controller, render) {
         }
     }
 
-    // php_var_dump(&render_val, 10);
+    zval_ptr_dtor(val);
     if (Z_TYPE(render_val) == IS_UNDEF) {
         array_init(&render_val);
     }
