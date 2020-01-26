@@ -93,11 +93,12 @@ ZEND_METHOD(goda_controller, render) {
     if (saveData) {
         assgin = zend_read_property(goda_controller_ce, getThis(), ZEND_STRL(GODA_CONTROLLER_ASSGIN), 1, NULL);
         if (val) {
+            HashTable *dest;
+            dest = zend_array_dup(Z_ARRVAL_P(assgin));
             // Z_TRY_ADDREF_P(val);
-            zend_hash_merge(Z_ARRVAL_P(val), Z_ARRVAL_P(assgin), zval_add_ref, 1);
+            ZVAL_ARR(&render_val, dest);
+            zend_hash_merge(dest, Z_ARRVAL_P(val), zval_add_ref, 1);
         }
-
-        ZVAL_COPY_VALUE(&render_val, val);
     } else {
         if (val) {
             ZVAL_COPY_VALUE(&render_val, val);
