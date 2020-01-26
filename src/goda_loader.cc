@@ -77,6 +77,7 @@ int goda_loader_include(zend_string *filename, zval *retval) {
                 ZVAL_COPY_VALUE(retval, &result);
             }
         }
+        zend_destroy_file_handle(&file_handle);
 	    return 1;
 	}
 	zend_destroy_file_handle(&file_handle);
