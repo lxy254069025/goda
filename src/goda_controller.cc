@@ -93,6 +93,7 @@ ZEND_METHOD(goda_controller, render) {
     if (saveData) {
         assgin = zend_read_property(goda_controller_ce, getThis(), ZEND_STRL(GODA_CONTROLLER_ASSGIN), 1, NULL);
         if (val) {
+            zval_add_ref(val);
             zend_hash_merge(Z_ARRVAL_P(assgin), Z_ARRVAL_P(val), zval_add_ref, 0);
         }
 
