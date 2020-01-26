@@ -13,17 +13,6 @@ zend_class_entry *goda_view_ce;
  */
 static zend_always_inline int goda_valid_var_name(const char *var_name, size_t var_name_len) /* {{{ */
 {
-#if 1
-	/* first 256 bits for first character, and second 256 bits for the next */
-	static const uint32_t charset[8] = {
-	     /*  31      0   63     32   95     64   127    96 */
-			0x00000000, 0x00000000, 0x87fffffe, 0x07fffffe,
-			0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff};
-	static const uint32_t charset2[8] = {
-	     /*  31      0   63     32   95     64   127    96 */
-			0x00000000, 0x03ff0000, 0x87fffffe, 0x07fffffe,
-			0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff};
-#endif
 	size_t i;
 	uint32_t ch;
 
@@ -33,15 +22,11 @@ static zend_always_inline int goda_valid_var_name(const char *var_name, size_t v
 
 	/* These are allowed as first char: [a-zA-Z_\x7f-\xff] */
 	ch = (uint32_t)((unsigned char *)var_name)[0];
-#if 1
-	if (UNEXPECTED(!ZEND_BIT_TEST(charset, ch))) {
-#else
 	if (var_name[0] != '_' &&
 		(ch < 65  /* A    */ || /* Z    */ ch > 90)  &&
 		(ch < 97  /* a    */ || /* z    */ ch > 122) &&
 		(ch < 127 /* 0x7f */ || /* 0xff */ ch > 255)
 	) {
-#endif
 		return 0;
 	}
 
@@ -50,16 +35,12 @@ static zend_always_inline int goda_valid_var_name(const char *var_name, size_t v
 		i = 1;
 		do {
 			ch = (uint32_t)((unsigned char *)var_name)[i];
-#if 1
-			if (UNEXPECTED(!ZEND_BIT_TEST(charset2, ch))) {
-#else
 			if (var_name[i] != '_' &&
 				(ch < 48  /* 0    */ || /* 9    */ ch > 57)  &&
 				(ch < 65  /* A    */ || /* Z    */ ch > 90)  &&
 				(ch < 97  /* a    */ || /* z    */ ch > 122) &&
 				(ch < 127 /* 0x7f */ || /* 0xff */ ch > 255)
 			) {
-#endif
 				return 0;
 			}
 		} while (++i < var_name_len);
