@@ -93,18 +93,20 @@ ZEND_METHOD(goda_controller, render) {
     if (saveData) {
         assgin = zend_read_property(goda_controller_ce, getThis(), ZEND_STRL(GODA_CONTROLLER_ASSGIN), 1, NULL);
         if (val) {
-            HashTable *dest;
-            dest = zend_array_dup(Z_ARRVAL_P(assgin));
+            zend_printf("111111111111111111111111 <br>");
             // Z_TRY_ADDREF_P(val);
-            ZVAL_ARR(&render_val, dest);
-            zend_hash_merge(dest, Z_ARRVAL_P(val), zval_add_ref, 1);
+            
+            // zend_hash_merge(Z_ARRVAL_P(assgin), Z_ARRVAL_P(val), zval_add_ref, 1);
         }
+
+        ZVAL_COPY_VALUE(&render_val, assgin);
     } else {
         if (val) {
             ZVAL_COPY_VALUE(&render_val, val);
         }
     }
-// 
+
+    
     if (Z_TYPE(render_val) == IS_UNDEF) {
         array_init(&render_val);
     }
@@ -112,7 +114,6 @@ ZEND_METHOD(goda_controller, render) {
     if (goda_view_render(filename, &render_val, &view_result) == 0) {
         zval_ptr_dtor(&view_result);
         zval_ptr_dtor(&render_val);
-        zval_ptr_dtor(val);
         goda_throw_exception(E_ERROR, "View render fiald");
         RETURN_FALSE;
     }
