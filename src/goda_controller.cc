@@ -95,7 +95,7 @@ ZEND_METHOD(goda_controller, render) {
         if (val) {
             // Z_TRY_ADDREF_P(val);
             ZEND_HASH_FOREACH_KEY_VAL(Z_ARRVAL_P(val), idx, key, value) {
-                // Z_ADDREF_P(value);
+                Z_TRY_ADDREF_P(value);
                 if (key) {
                     zend_hash_update(Z_ARRVAL_P(assgin), key, value);
                 } else {
