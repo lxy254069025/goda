@@ -3,7 +3,7 @@
 
 extern zend_class_entry *goda_exception_ce;
 
-void goda_throw_exception(int type, char *format, ...);
+void goda_throw_exception(int type, const char *format, ...);
 
 GODA_MINIT_FUNCTION(exception);
 
