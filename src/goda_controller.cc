@@ -84,6 +84,10 @@ ZEND_METHOD(goda_controller, render) {
         Z_PARAM_BOOL(saveData)
     ZEND_PARSE_PARAMETERS_END();
 
+    if (zend_parse_parameters(ZEND_NUM_ARGS(), "S|ab", &filename, &val, &saveData) == FAILURE) {
+		return;
+	}
+
     ZVAL_UNDEF(&view_result);
     ZVAL_UNDEF(&render_val);
     if (saveData) {
