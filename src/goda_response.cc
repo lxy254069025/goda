@@ -22,6 +22,19 @@ void goda_response_set_header(zval *this_ptr, zend_string *key, zend_string *val
     }
 }
 
+void goda_response_set_str_header(zval *this_ptr, const char *key, const char *value) {
+    zval *header = zend_read_property(goda_response_ce, this_ptr, ZEND_STRL(GODA_RESPONSE_HEADER), 1, NULL);
+    if (Z_TYPE_P(header) == IS_ARRAY) {
+        add_assoc_string(header, key, value);
+    } else {
+        zval array;
+        array_init(&array);
+        add_assoc_string(&array, key, value);
+        zend_update_property(goda_response_ce, this_ptr, ZEND_STRL(GODA_RESPONSE_HEADER), &array);
+        zval_ptr_dtor(&array);
+    }
+}
+
 void goda_response_str_send(zval *this_ptr, zend_string *str) {
     zval *header = zend_read_property(goda_response_ce, this_ptr, ZEND_STRL(GODA_RESPONSE_HEADER), 1, NULL);
     if (!ZVAL_IS_NULL(header)) {

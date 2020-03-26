@@ -9,6 +9,8 @@ void goda_response_instance(zval *this_ptr);
 
 void goda_response_set_header(zval *this_ptr, zend_string *key, zend_string *value);
 
+void goda_response_set_str_header(zval *this_ptr, const char *key, const char *value);
+
 void goda_response_str_send(zval *this_ptr, zend_string *str);
 
 void goda_response_send(zval *this_ptr, zval *body);

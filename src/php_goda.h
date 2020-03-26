@@ -17,6 +17,7 @@ extern "C" {
 #include "Zend/zend_smart_str.h"
 #include "ext/pcre/php_pcre.h"
 #include "Zend/zend_exceptions.h"
+#include "php_globals.h"
 }
 
 int goda_call_method(zval *obj, zend_class_entry *obj_ce, const char *func_name, size_t func_name_len, zval *retval_ptr, int number, zval *param);
@@ -29,8 +30,6 @@ extern zend_module_entry goda_module_entry;
 # if defined(ZTS) && defined(COMPILE_DL_GODA)
 ZEND_TSRMLS_CACHE_EXTERN()
 # endif
-
-
 
 #define GODA_STARTUP(module)                 ZEND_MODULE_STARTUP_N(goda_##module)(INIT_FUNC_ARGS_PASSTHRU)
 #define GODA_MINIT_FUNCTION(module)          ZEND_MINIT_FUNCTION(goda_##module) 

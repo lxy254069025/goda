@@ -1,6 +1,8 @@
 #include "php_goda.h"
 #include "Zend/zend_inheritance.h"
 
+#include "ext/json/php_json.h"
+
 #include "goda_controller.h"
 #include "goda_view.h"
 #include "goda_response.h"
@@ -134,6 +136,26 @@ ZEND_METHOD(goda_controller, renderJson) {
     ZEND_PARSE_PARAMETERS_START(1, 1)
         Z_PARAM_ARRAY(array)
     ZEND_PARSE_PARAMETERS_END();
+
+    // JSON_G(error_code) = PHP_JSON_ERROR_NONE;
+    // JSON_G(encode_max_depth) = 512;
+
+    // smart_str buf = { 0 };
+
+    // // php_json_encode(&buf, array, PHP_JSON_UNESCAPED_UNICODE);
+
+    // if (JSON_G(error_code) != PHP_JSON_ERROR_NONE && !(PHP_JSON_UNESCAPED_UNICODE & PHP_JSON_PARTIAL_OUTPUT_ON_ERROR))
+    // {
+    //     smart_str_free(&buf);
+    //     RETURN_FALSE;
+    // }
+    // else
+    // {
+    //     smart_str_0(&buf);
+    //     zval *response_ptr = zend_read_property(goda_controller_ce, getThis(), ZEND_STRL(GODA_CONTROLLER_RESPONSE), 1, NULL);
+    //     goda_response_str_send(response_ptr, buf.s);
+    //     smart_str_free(&buf);
+    // }
 
     ZVAL_STRING(&json_ecode, "json_encode");
     
