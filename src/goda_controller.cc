@@ -108,14 +108,10 @@ ZEND_METHOD(goda_controller, render) {
         zval_ptr_dtor(&view_result);
         zval_ptr_dtor(&render_val);
         goda_throw_exception(E_ERROR, "View render fiald");
-        RETURN_FALSE;
+        RETURN_EMPTY_STRING();
     }
-
-    zval *response_ptr = zend_read_property(goda_controller_ce, getThis(), ZEND_STRL(GODA_CONTROLLER_RESPONSE), 1, NULL);
-    goda_response_send(response_ptr, &view_result);
-    zval_ptr_dtor(&view_result);
     zval_ptr_dtor(&render_val);
-    RETURN_TRUE;
+    RETURN_ZVAL(&view_result, 1, 1);
 }
 
 ZEND_METHOD(goda_controller, renderText) {
@@ -125,9 +121,7 @@ ZEND_METHOD(goda_controller, renderText) {
         Z_PARAM_STR(str)
     ZEND_PARSE_PARAMETERS_END();
     
-    zval *response_ptr = zend_read_property(goda_controller_ce, getThis(), ZEND_STRL(GODA_CONTROLLER_RESPONSE), 1, NULL);
-    goda_response_str_send(response_ptr, str);
-    RETURN_TRUE;
+    RETURN_STR(str);
 }
 
 ZEND_METHOD(goda_controller, renderJson) {
@@ -136,6 +130,22 @@ ZEND_METHOD(goda_controller, renderJson) {
     ZEND_PARSE_PARAMETERS_START(1, 1)
         Z_PARAM_ARRAY(array)
     ZEND_PARSE_PARAMETERS_END();
+
+    ZVAL_STRING(&json_ecode, "json_encode");
+    
+    ZVAL_ZVAL(&params[0], array, 1, 0);
+    ZVAL_LONG(&params[1], 1<<8);
+
+    ZVAL_NULL(&retval);
+    if (call_user_function(EG(function_table), NULL, &json_ecode, &retval, 2, params) == FAILURE) {
+        goda_throw_exception(E_ERROR, "call json_encode fiald");
+    } 
+    zval_ptr_dtor(&json_ecode);
+    // zval_ptr_dtor(&retval);
+    zval_ptr_dtor(&params[0]);
+    zval_ptr_dtor(&params[1]);
+
+    RETURN_ZVAL(&retval, 1, 1);
 
     // JSON_G(error_code) = PHP_JSON_ERROR_NONE;
     // JSON_G(encode_max_depth) = 512;
@@ -156,21 +166,6 @@ ZEND_METHOD(goda_controller, renderJson) {
     //     goda_response_str_send(response_ptr, buf.s);
     //     smart_str_free(&buf);
     // }
-
-    ZVAL_STRING(&json_ecode, "json_encode");
-    
-    ZVAL_ZVAL(&params[0], array, 1, 0);
-    ZVAL_LONG(&params[1], 1<<8);
-
-    ZVAL_NULL(&retval);
-    if (call_user_function(EG(function_table), NULL, &json_ecode, &retval, 2, params) == SUCCESS) {
-        zval *response_ptr = zend_read_property(goda_controller_ce, getThis(), ZEND_STRL(GODA_CONTROLLER_RESPONSE), 1, NULL);
-        goda_response_send(response_ptr, &retval);
-    } 
-    zval_ptr_dtor(&json_ecode);
-    zval_ptr_dtor(&retval);
-    zval_ptr_dtor(&params[0]);
-    zval_ptr_dtor(&params[1]);
 }
 
 ZEND_METHOD(goda_controller, redirect) {
