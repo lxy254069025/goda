@@ -10,8 +10,5 @@ make install
 extension=goda.so
 ```
 
-## 快速开始
-拷贝example至你的web目录下。运行 ``` php -S localhost:8848 -t web/ ```
-
 ## 文档
-**没有**
+* [文档](doc/SUMMARY.md)
