@@ -1,6 +1,5 @@
 <?php
 namespace controllers;
-use models;
 use Goda\Application;
 
 class Index extends \Goda\Controller {
