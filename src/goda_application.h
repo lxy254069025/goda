@@ -5,6 +5,7 @@
 #define GODA_APPLICATION_APP        "app"
 #define GODA_APPLICATION_REQUEST    "request"
 #define GODA_APPLICATION_CONDIG     "config"
+#define GODA_APPLICATION_OBJECTS    "objects"
 
 extern zend_class_entry *goda_application_ce;
 
